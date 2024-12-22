@@ -1,47 +1,98 @@
 package com.example.tictactoekotlin
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.tictactoekotlin.ui.theme.TicTacToeKotlinTheme
 
 class MainActivity : ComponentActivity() {
+    private val board = Array(3) { Array(3) { "" } }
+    private var currentPlayer by mutableStateOf("X")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             TicTacToeKotlinTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                GameScreen()
+            }
+        }
+    }
+
+    @Composable
+    fun GameScreen() {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(text = "Tic Tac Toe", modifier = Modifier.padding(bottom = 16.dp))
+            for (i in 0 until 3) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                ) {
+                    for (j in 0 until 3) {
+                        Button(
+                            onClick = {
+                                if (board[i][j].isEmpty()) {
+                                    board[i][j] = currentPlayer
+                                    currentPlayer = if (currentPlayer == "X") "O" else "X"
+                                    checkWinner()
+                                }
+                            },
+                            modifier = Modifier
+                                .size(100.dp)
+                                .padding(4.dp)
+                        ) {
+                            Text(text = board[i][j])
+                        }
+                    }
                 }
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    private fun checkWinner() {
+        for (i in 0 until 3) {
+            if (board[i][0] == board[i][1] && board[i][1] == board[i][2] && board[i][0].isNotEmpty()) {
+                announceWinner(board[i][0])
+                return
+            }
+        }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TicTacToeKotlinTheme {
-        Greeting("Android")
+        for (j in 0 until 3) {
+            if (board[0][j] == board[1][j] && board[1][j] == board[2][j] && board[0][j].isNotEmpty()) {
+                announceWinner(board[0][j])
+                return
+            }
+        }
+
+        if (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0].isNotEmpty()) {
+            announceWinner(board[0][0])
+            return
+        }
+
+        if (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2].isNotEmpty()) {
+            announceWinner(board[0][2])
+            return
+        }
+
+        if (board.all { row -> row.all { it.isNotEmpty() } }) {
+            announceWinner("Draw")
+        }
+    }
+
+    private fun announceWinner(winner: String) {
+        Toast.makeText(this, "Winner: $winner", Toast.LENGTH_SHORT).show()
     }
 }
