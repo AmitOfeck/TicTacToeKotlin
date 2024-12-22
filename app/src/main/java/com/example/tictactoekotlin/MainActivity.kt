@@ -5,11 +5,14 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.tictactoekotlin.ui.theme.TicTacToeKotlinTheme
 
@@ -35,7 +38,14 @@ class MainActivity : ComponentActivity() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "Tic Tac Toe", modifier = Modifier.padding(bottom = 16.dp))
+            // Display the current player
+            Text(
+                text = "Current Player: $currentPlayer",
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            // Loop to generate the game grid
             for (i in 0 until 3) {
                 Row(
                     horizontalArrangement = Arrangement.Center,
@@ -53,8 +63,15 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .size(100.dp)
                                 .padding(4.dp)
+                                .background(
+                                    when {
+                                        board[i][j] == "X" -> Color.Red
+                                        board[i][j] == "O" -> Color.Blue
+                                        else -> Color.Gray
+                                    }
+                                )
                         ) {
-                            Text(text = board[i][j])
+                            Text(text = board[i][j], color = Color.White)
                         }
                     }
                 }
