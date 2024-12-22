@@ -18,8 +18,10 @@ import androidx.compose.ui.unit.sp
 import com.example.tictactoekotlin.ui.theme.TicTacToeKotlinTheme
 
 class MainActivity : ComponentActivity() {
-    private val board = Array(3) { Array(3) { "" } }
+    private var board = Array(3) { Array(3) { "" } }
     private var currentPlayer by mutableStateOf("X")
+    private var gameOver by mutableStateOf(false)
+    private var winner by mutableStateOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +55,7 @@ class MainActivity : ComponentActivity() {
                     for (j in 0 until 3) {
                         Button(
                             onClick = {
-                                if (board[i][j].isEmpty()) {
+                                if (board[i][j].isEmpty() && !gameOver) {
                                     board[i][j] = currentPlayer
                                     currentPlayer = if (currentPlayer == "X") "O" else "X"
                                     checkWinner()
@@ -77,6 +79,19 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
+            }
+
+            // If the game is over, show the "Play Again" button
+            if (gameOver) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = { restartGame() }) {
+                    Text(text = "Play Again", fontSize = 20.sp)
+                }
+                Text(
+                    text = "Winner: $winner",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(top = 16.dp)
+                )
             }
         }
     }
@@ -112,6 +127,15 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun announceWinner(winner: String) {
+        this.winner = winner
+        gameOver = true
         Toast.makeText(this, "Winner: $winner", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun restartGame() {
+        board = Array(3) { Array(3) { "" } }
+        currentPlayer = "X"
+        gameOver = false
+        winner = ""
     }
 }
