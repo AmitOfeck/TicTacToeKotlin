@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.tictactoekotlin.ui.theme.TicTacToeKotlinTheme
 
 class MainActivity : ComponentActivity() {
@@ -38,14 +39,12 @@ class MainActivity : ComponentActivity() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Display the current player
             Text(
                 text = "Current Player: $currentPlayer",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Loop to generate the game grid
             for (i in 0 until 3) {
                 Row(
                     horizontalArrangement = Arrangement.Center,
@@ -63,15 +62,18 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .size(100.dp)
                                 .padding(4.dp)
-                                .background(
-                                    when {
-                                        board[i][j] == "X" -> Color.Red
-                                        board[i][j] == "O" -> Color.Blue
-                                        else -> Color.Gray
-                                    }
-                                )
+                                .background(Color.Transparent),
+                            colors = when {
+                                board[i][j] == "X" -> androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Color.Red)
+                                board[i][j] == "O" -> androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Color.Blue)
+                                else -> androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Color.Gray)
+                            }
                         ) {
-                            Text(text = board[i][j], color = Color.White)
+                            Text(
+                                text = board[i][j],
+                                color = Color.White,
+                                fontSize = 32.sp
+                            )
                         }
                     }
                 }
